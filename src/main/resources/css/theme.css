@@ -12,10 +12,11 @@
     -fx-light-green: #1EB980;
     -fx-dark-green: #005D57;
     -fx-blue: #5264AE;
+    -fx-dark-blue: #2979FF;
 }
 
 .root{
-    -fx-background-color: -fx-blue;
+    -fx-background-color: #CFD8DC;
 }
 
 .button {
@@ -26,24 +27,34 @@
 .button-raised {
     -fx-padding: 0.7em 0.57em;
     -fx-font-size: 15px;
+    -fx-font-weight: bold;
     -fx-button-type: RAISED;
     -fx-background-color: -fx-yellow;
     -fx-pref-width: 200;
-    -fx-text-fill: -fx-dark-black;
+    -fx-text-fill: -fx-dark-green;
     -fx-min-width: 200;
-    /*-fx-effect:dropshadow(gaussian, #B4C1CC, 0.0, 0.0, 4, 6);*/
+    /* -fx-effect:dropshadow(gaussian, #B4C1CC, 0.0, 0.0, 2.0, 2.0);*/
 }
 
 .button-raised: hover {
-    -fx-background-color: -fx-dark-pink;
+    -fx-text-fill: WHITE;
 }
 
 .label {
     -fx-font-family: "sans-serif";
     -fx-font-smoothing-type: gray;
-    -fx-font-weight: normal;
-    -fx-text-fill: WHITE;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-dark-black;
     -fx-font-size : 12pt;
+    -fx-focus-color: -fx-primary-text;
+}
+
+.header-label {
+    -fx-font-family: "cursive";
+    -fx-font-smoothing-type: gray;
+    -fx-font-weight: normal;
+    -fx-text-fill: -fx-dark-green;
+    -fx-font-size : 25pt;
     -fx-focus-color: -fx-primary-text;
 }
 

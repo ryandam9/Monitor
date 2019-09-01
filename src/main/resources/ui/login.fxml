@@ -14,7 +14,7 @@
     <top>
         <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <children>
-                <Label text="Job Monitor">
+                <Label styleClass="header-label" stylesheets="@../css/theme.css" text="Job Monitor">
                     <font>
                         <Font name="Garamond Bold" size="34.0" />
                     </font>
@@ -31,7 +31,7 @@
     <center>
         <AnchorPane prefHeight="200.0" BorderPane.alignment="CENTER">
             <children>
-                <VBox layoutX="133.0" layoutY="70.0" prefHeight="295.0" prefWidth="415.0" style="-fx-background-color: gray;">
+                <VBox layoutX="133.0" layoutY="70.0" prefHeight="295.0" prefWidth="415.0" style="-fx-background-color: #344955;">
                     <children>
                         <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="40.0" prefWidth="395.0" text="Jumpbox Connection Details" textAlignment="CENTER">
                             <VBox.margin>
@@ -55,7 +55,7 @@
                         </TextField>
                     </children>
                 </VBox>
-                <VBox layoutX="597.0" layoutY="70.0" prefHeight="295.0" prefWidth="415.0" style="-fx-background-color: gray;">
+                <VBox layoutX="597.0" layoutY="70.0" prefHeight="295.0" prefWidth="415.0" style="-fx-background-color: #344955;">
                     <children>
                         <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="40.0" prefWidth="395.0" text="AppServer Connection Details" textAlignment="CENTER">
                             <VBox.margin>
@@ -79,7 +79,7 @@
                         </TextField>
                     </children>
                 </VBox>
-                <Label alignment="CENTER" layoutX="133.0" layoutY="403.0" prefHeight="40.0" prefWidth="201.0" text="Loc of Job file on App Server" textOverrun="LEADING_WORD_ELLIPSIS" />
+                <Label alignment="CENTER" layoutX="133.0" layoutY="403.0" prefHeight="40.0" prefWidth="201.0" text="Loc of Job file on Server" textOverrun="LEADING_WORD_ELLIPSIS" />
                 <TextField fx:id="jobFile" layoutX="334.0" layoutY="403.0" prefHeight="40.0" prefWidth="678.0" />
                 <Button fx:id="monitorBtn" layoutX="812.0" layoutY="463.0" mnemonicParsing="false" onAction="#validateUserInputs" prefHeight="40.0" prefWidth="200.0" styleClass="button-raised" text="Verify Connections" />
             </children>

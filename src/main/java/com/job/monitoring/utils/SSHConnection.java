@@ -9,7 +9,7 @@ public class SSHConnection {
     private String HostIpAddress;
     private String privateKeyFile;
 
-    static Session session;
+    public static Session session;
 
     public SSHConnection(String userId, String HostIpAddress, String privateKeyFile) {
         this.userId = userId;
@@ -34,7 +34,7 @@ public class SSHConnection {
         }
     }
 
-    public String executeRemoteCommand(String command) throws Exception {
+    public static String executeRemoteCommand(String command) throws Exception {
         StringBuffer result = new StringBuffer();
 
         try {
