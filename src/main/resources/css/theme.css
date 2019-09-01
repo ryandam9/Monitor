@@ -13,10 +13,17 @@
     -fx-dark-green: #005D57;
     -fx-blue: #5264AE;
     -fx-dark-blue: #2979FF;
+
+    /* Found this style in eenadu.net login page */
+    -fx-light-white-gray: #F2F2F2;
+    -fx-dark-white-gray: #D9D9D9;
+    -fx-dark-green: #138496;
+    -fx-light-green: #D4EDDA;
+    -fx-light-white: #F0FFFF;
 }
 
 .root{
-    -fx-background-color: #CFD8DC;
+    -fx-background-color: -fx-dark-white-gray;
 }
 
 .button {
@@ -29,9 +36,9 @@
     -fx-font-size: 15px;
     -fx-font-weight: bold;
     -fx-button-type: RAISED;
-    -fx-background-color: -fx-yellow;
+    -fx-background-color: -fx-dark-green;
     -fx-pref-width: 200;
-    -fx-text-fill: -fx-dark-green;
+    -fx-text-fill: -fx-light-white;
     -fx-min-width: 200;
     /* -fx-effect:dropshadow(gaussian, #B4C1CC, 0.0, 0.0, 2.0, 2.0);*/
 }
@@ -43,9 +50,9 @@
 .label {
     -fx-font-family: "sans-serif";
     -fx-font-smoothing-type: gray;
-    -fx-font-weight: bold;
-    -fx-text-fill: -fx-dark-black;
-    -fx-font-size : 12pt;
+    -fx-font-weight: normal;
+    -fx-text-fill: -fx-dark-green;
+    -fx-font-size : 10pt;
     -fx-focus-color: -fx-primary-text;
 }
 

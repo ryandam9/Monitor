@@ -77,6 +77,7 @@ public class LoginScreenController implements Initializable {
                 appServerUserIdVal.trim().length() == 0 || appServerIpAddressVal.trim().length() == 0 || locappServerPrivKeyFileVal.trim().length() == 0 ||
                 jobFileLocation.trim().length() == 0) {
             statusMsg.setText("Make sure to key in all the required fields !");
+            //statusMsg.setStyle("-fx-background-color: #D4EDDA;");
             return;
         }
 
