@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -78,7 +79,7 @@ public class LoginScreenController implements Initializable {
                 jobFileLocation.trim().length() == 0) {
             statusMsg.setText("Make sure to key in all the required fields !");
             //statusMsg.setStyle("-fx-background-color: #D4EDDA;");
-            return;
+            //return;
         }
 
         // Check If the Credentials working or not. The Requirement is to connect
@@ -90,7 +91,7 @@ public class LoginScreenController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
             statusMsg.setText(e.getMessage());
-            return;
+            //return;
         }
 
         // TODO: Here, verify the connectivity from Jumpbox to App Server. The command should get the contents of the
@@ -100,7 +101,7 @@ public class LoginScreenController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
             statusMsg.setText(e.getMessage());
-            return;
+            //return;
         }
 
         loadStatusWindow();
@@ -124,6 +125,7 @@ public class LoginScreenController implements Initializable {
             stage.setTitle("Job Monitor");
             stage.setScene(new Scene(parent));
             stage.setResizable(false);
+            stage.getIcons().add(new Image(new File("resources/images/circle.png").toURI().toURL().toString()));
             stage.show();
         } catch (IOException ex) {
             ex.printStackTrace();

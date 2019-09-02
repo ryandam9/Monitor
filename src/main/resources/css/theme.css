@@ -34,17 +34,19 @@
 .button-raised {
     -fx-padding: 0.7em 0.57em;
     -fx-font-size: 15px;
-    -fx-font-weight: bold;
+    -fx-font-weight: normal;
     -fx-button-type: RAISED;
     -fx-background-color: -fx-dark-green;
     -fx-pref-width: 200;
     -fx-text-fill: -fx-light-white;
     -fx-min-width: 200;
+    -fx-font-smoothing-type: gray;
+    -fx-border-radius: 10 10 0 0;
     /* -fx-effect:dropshadow(gaussian, #B4C1CC, 0.0, 0.0, 2.0, 2.0);*/
 }
 
 .button-raised: hover {
-    -fx-text-fill: WHITE;
+    -fx-background-color: -fx-dark-black;
 }
 
 .label {
@@ -59,10 +61,22 @@
 .header-label {
     -fx-font-family: "cursive";
     -fx-font-smoothing-type: gray;
-    -fx-font-weight: normal;
+    -fx-font-weight: bold;
     -fx-text-fill: -fx-dark-green;
     -fx-font-size : 25pt;
     -fx-focus-color: -fx-primary-text;
+}
+
+.text-field {
+/*
+    -fx-background-color: -fx-text-box-border, -fx-background ;
+    -fx-background-insets: 0, 0 0 1 0 ;
+    -fx-background-radius: 0 ;*/
+    -fx-font-family: "monospace";
+    -fx-font-size: 12pt;
+}
+.text-field:focused {
+    -fx-background-color: -fx-focus-color, -fx-background ;
 }
 
 .check-box {

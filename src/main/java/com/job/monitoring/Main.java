@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -20,7 +21,8 @@ public class Main extends Application {
 
         stage.setScene(scene);
         stage.setResizable(false);
-        stage.setTitle("Settings Window");
+        stage.setTitle("Job Monitor");
+        stage.getIcons().add(new Image(new File("resources/images/circle.png").toURI().toURL().toString()));
         stage.show();
     }
 
