@@ -9,7 +9,7 @@ public class SSHConnection {
     private String HostIpAddress;
     private String privateKeyFile;
 
-    public static Session session;
+    private static Session session;
 
     public SSHConnection(String userId, String HostIpAddress, String privateKeyFile) {
         this.userId = userId;
@@ -34,7 +34,10 @@ public class SSHConnection {
         }
     }
 
-    public static String executeRemoteCommand(String command) throws Exception {
+    public static String executeRemoteCommand(String command) throws IllegalArgumentException {
+        System.out.println("Command getting executed: " + command);
+        int exitStatus = 0;
+
         StringBuffer result = new StringBuffer();
 
         try {
@@ -63,21 +66,27 @@ public class SSHConnection {
                     if (in.available() > 0) {
                         continue;
                     }
-                    // System.out.println("exit-status: " + channel.getExitStatus());
+                    exitStatus = channel.getExitStatus();
                     break;
                 }
             }
         } catch (JSchException jschEx) {
             System.out.println("Exception occurred when executing command " + command);
             jschEx.getStackTrace();
-            throw jschEx;
-
+            throw new IllegalArgumentException("Exception occurred when executing command " + command);
         } catch (Exception exception) {
             System.out.println("Exception occurred when executing command " + command);
             exception.printStackTrace();
-            throw exception;
+            throw new IllegalArgumentException("Exception occurred when executing command " + command);
         }
 
-        return result.toString();
+        System.out.println("Remote Command: " + command);
+        System.out.println("Result: " + result.toString().trim());
+
+        if (exitStatus == 0) {
+            return result.toString().trim();
+        } else {
+            throw new IllegalArgumentException("Unable to execute command: " + command);
+        }
     }
 }

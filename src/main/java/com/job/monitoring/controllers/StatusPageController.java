@@ -56,13 +56,32 @@ public class StatusPageController implements Initializable {
     private Label statusMsg;
 
     // Non UI elements
-    private String jobFileLocation;
-    private List<JobDetail> jobs;
+    private List<String> jobList;           // This is set by reading Job names from the Job name file.
+    private List<JobDetail> jobs;           // List of Buttons, each button represents a job.
     ScheduledExecutorService executor;
 
-    public void setJobFileLocation(String loc) {
-        this.jobFileLocation = loc;
-        System.out.println("setJobFileLocation() is set to " + loc);
+    public void setJobList(List<String> jobList) {
+        this.jobList = jobList;
+
+        try {
+            jobList.forEach(name -> {
+                JobDetail btn = new JobDetail(name, "");
+                btn.getStyleClass().add("button-raised");
+
+                jobListView.getChildren().add(btn);
+
+                // Store all Button references
+                jobs.add(btn);
+
+                btn.setOnAction(event -> {
+                    resultTextArea.setText(btn.getJobLog());
+                });
+            });
+
+        } catch (Exception ex) {
+            statusMsg.setText(ex.getMessage());
+            return;
+        }
     }
 
     @Override
@@ -80,40 +99,6 @@ public class StatusPageController implements Initializable {
         //        b. Identify the success/failure of the job from the log and change the bg color of the button.
         //        c. If no job log is found, it means Job has not started.
         //             GREEN | RED | GRAY
-
-        // Read the jobs list file and identify the jobs to be monitored
-        try {
-            String jobListFileContents = SSHConnection.executeRemoteCommand("cat " + jobFileLocation);
-            List<String> jobList = new ArrayList<>();
-
-            // Process the strings and extract Job names.
-            jobList.add("Job 1");
-            jobList.add("Job 2");
-            jobList.add("Job 3");
-            jobList.add("Job 4");
-            jobList.add("Job 5");
-            jobList.add("Job 6");
-            jobList.add("Job 7");
-            jobList.add("Job 8");
-            jobList.add("Job 9");
-            jobList.add("Job 10");
-
-            jobList.forEach(name -> {
-                JobDetail btn = new JobDetail(name, "");
-                jobListView.getChildren().add(btn);
-
-                // Store all Button references
-                jobs.add(btn);
-
-                btn.setOnAction(event -> {
-                    resultTextArea.setText(btn.getJobLog());
-                });
-            });
-
-        } catch (Exception ex) {
-            statusMsg.setText(ex.getMessage());
-            return;
-        }
 
         // Monitor the jobs
         String jobLogsLocation = "";

@@ -72,11 +72,18 @@
     -fx-background-color: -fx-text-box-border, -fx-background ;
     -fx-background-insets: 0, 0 0 1 0 ;
     -fx-background-radius: 0 ;*/
-    -fx-font-family: "monospace";
+    -fx-font-family: "consolas";
     -fx-font-size: 12pt;
+    -fx-text-fill: -fx-dark-green;
 }
+
 .text-field:focused {
     -fx-background-color: -fx-focus-color, -fx-background ;
+}
+
+.status-bar {
+    -fx-font-family: "consolas";
+    -fx-font-size: 12pt;
 }
 
 /* Scroll bar changes */
