@@ -13,6 +13,7 @@
     -fx-dark-green: #005D57;
     -fx-blue: #5264AE;
     -fx-dark-blue: #2979FF;
+    -fx-pure-black: #000000;
 
     /* Found this style in eenadu.net login page */
     -fx-light-white-gray: #F2F2F2;
@@ -20,6 +21,9 @@
     -fx-dark-green: #138496;
     -fx-light-green: #D4EDDA;
     -fx-light-white: #F0FFFF;
+
+    /* Soumya's purple color */
+    -fx-soumya-purple: #7D2996;
 }
 
 .root{
@@ -84,6 +88,49 @@
 .status-bar {
     -fx-font-family: "consolas";
     -fx-font-size: 12pt;
+}
+
+.result-area-like-unix {
+    -fx-font-family: "consolas";
+    -fx-font-size: 10pt;
+    -fx-control-inner-background:#000000;
+    -fx-highlight-fill: #00ff00;
+    -fx-highlight-text-fill: #000000;
+    -fx-text-fill: #00ff00;
+}
+
+.result-area {
+    -fx-font-family: "consolas";
+    -fx-font-size: 10pt;
+    -fx-control-inner-background: -fx-black;
+    -fx-highlight-fill: WHITE;
+    -fx-highlight-text-fill: -fx-pure-black;
+    -fx-text-fill: -fx-yellow;
+}
+
+.text-area {
+    text-area-background: -fx-black;
+}
+
+.text-area .content {
+    -fx-background-color: text-area-background;
+}
+
+.text-area {
+    -fx-background-color: -fx-black;
+}
+
+.text-area .scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.text-area .scroll-pane .viewport{
+    -fx-background-color: transparent;
+}
+
+
+.text-area .scroll-pane .content{
+    -fx-background-color: transparent;
 }
 
 /* Scroll bar changes */

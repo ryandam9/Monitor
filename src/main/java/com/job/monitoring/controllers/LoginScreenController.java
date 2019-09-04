@@ -44,6 +44,9 @@ public class LoginScreenController implements Initializable {
     private TextField jobFile;
 
     @FXML
+    private TextField logDirectory;
+
+    @FXML
     private Button monitorBtn;
 
     @FXML
@@ -73,12 +76,24 @@ public class LoginScreenController implements Initializable {
 
         // The file that contains Jobs to be executed, available on App Server.
         String jobFileLocation = jobFile.getText();
+        String logDirectoryLoc = logDirectory.getText();
+
+        // Remove Later
+        jumpboxUserIdVal = "ec2-user";
+        jumpboxIpAddressVal = "13.210.66.191";
+        locJumpboxPrivKeyFileVal = "C:\\Users\\ryand\\Desktop\\test1.pem";
+        appServerUserIdVal = "ec2-user";
+        appServerIpAddressVal = "54.252.210.0";
+        locappServerPrivKeyFileVal = "/home/ec2-user/test1.pem";
+        jobFileLocation = "/home/ec2-user/test.txt";
+        logDirectoryLoc = "/home/ec2-user";
 
         // Verify if any entry is not keyed in
         if (jumpboxUserIdVal.trim().length() == 0 ||
                 jumpboxIpAddressVal.trim().length() == 0 || locJumpboxPrivKeyFileVal.trim().length() == 0 ||
                 appServerUserIdVal.trim().length() == 0 || appServerIpAddressVal.trim().length() == 0 || locappServerPrivKeyFileVal.trim().length() == 0 ||
-                jobFileLocation.trim().length() == 0) {
+                jobFileLocation.trim().length() == 0 ||
+                logDirectoryLoc.trim().length() == 0) {
             statusMsg.setText("Make sure to key in all the required fields !");
             //statusMsg.setStyle("-fx-background-color: #D4EDDA;");
             return;
@@ -143,11 +158,13 @@ public class LoginScreenController implements Initializable {
         locappServerPrivKeyFile.setDisable(true);
         jobFile.setDisable(true);
         monitorBtn.setDisable(true);
+        logDirectory.setDisable(true);
 
-        loadStatusWindow();
+        String appServerCmdTemplate = "ssh -i " + locappServerPrivKeyFileVal + " " + appServerUserIdVal + "@" + appServerIpAddressVal + " ";
+        loadStatusWindow(logDirectoryLoc, appServerCmdTemplate);
     }
 
-    void loadStatusWindow() {
+    void loadStatusWindow(String logDirectoryLoc, String appServerCmdTemplate) {
         // TODO: First close the first window and then render the Results Window.
         try {
             URL url = new File("resources/ui/status.fxml").toURI().toURL();
@@ -159,23 +176,26 @@ public class LoginScreenController implements Initializable {
             System.out.println(statusPageController);
 
             List<String> l = new ArrayList<>();
-            l.add("job 1");
-            l.add("job 2");
-            l.add("job 3");
-            l.add("job 4");
-            l.add("job 5");
-            l.add("job 6");
-            l.add("job 7");
-            l.add("job 8");
-            l.add("job 9");
-            l.add("job 10");
-            l.add("job 11");
-            l.add("job 12");
-            l.add("job 13");
-            l.add("job 14");
+            l.add("job1");
+            l.add("job2");
+            l.add("job3");
+            l.add("job4");
+            l.add("job5");
+            l.add("job6");
+            l.add("job7");
+            l.add("job8");
+            l.add("job9");
+            l.add("job10");
+            l.add("job11");
+            l.add("job12");
+            l.add("job13");
+            l.add("job14");
+
+            // Initial Window Stage
+            Stage loginStage = (Stage) jumpboxUserId.getScene().getWindow();
 
             // Pass the Jobs list file name to the next Controller.
-            statusPageController.setJobList(l);
+            statusPageController.setJobList(loginStage, l, logDirectoryLoc, appServerCmdTemplate);
 
             Stage stage = new Stage(StageStyle.DECORATED);
             stage.setTitle("Job Monitor");

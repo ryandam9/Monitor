@@ -2,7 +2,6 @@ package com.job.monitoring.controllers;
 
 import com.job.monitoring.ui.JobDetail;
 import com.job.monitoring.utils.RefreshJobStatus;
-import com.job.monitoring.utils.SSHConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -10,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -55,13 +55,45 @@ public class StatusPageController implements Initializable {
     @FXML
     private Label statusMsg;
 
+    @FXML
+    private ProgressBar progressBar;
+
     // Non UI elements
     private List<String> jobList;           // This is set by reading Job names from the Job name file.
+    private String logDir;
     private List<JobDetail> jobs;           // List of Buttons, each button represents a job.
     ScheduledExecutorService executor;
+    private String appServerCmdTemplate;
+    private Stage loginStage;
 
-    public void setJobList(List<String> jobList) {
+    /**
+     * This method gets executed first when the Controller is created.
+     *
+     * @param url
+     * @param resourceBundle
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        jobs = new ArrayList<>();
+        executor = Executors.newScheduledThreadPool(2);
+    }
+
+    /**
+     * This method is called from other controller. It sets the "jobList" and Location of Log directory which
+     * are read from the UI from User. To read log files from the App Server these two are required.
+     * <p>
+     * This method also creates a Button for each of the jobs. Each Button's name is Job name. Each button also
+     * has a "jobLog" property which is to store the Log of that job. When a Button is clicked, it log will be
+     * shown on the Text Area.
+     *
+     * @param jobList
+     * @param logDir
+     */
+    public void setJobList(Stage loginStage, List<String> jobList, String logDir, String appServerCmdTemplate) {
         this.jobList = jobList;
+        this.logDir = logDir;
+        this.appServerCmdTemplate = appServerCmdTemplate;
+        this.loginStage = loginStage;
 
         try {
             jobList.forEach(name -> {
@@ -82,35 +114,43 @@ public class StatusPageController implements Initializable {
             statusMsg.setText(ex.getMessage());
             return;
         }
+
+        // Start monitoring jobs right away. No need to wait for User action. Don't show this button.
+        // Trigger an event to start it.
+        monitorBtn.setVisible(false);
+        refreshJobLogs(new ActionEvent());
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        jobs = new ArrayList<>();
-        executor = Executors.newScheduledThreadPool(2);
-    }
 
+    /**
+     * Read job logs on App Server and updates the background color of the Buttons. In addition to this, sets
+     * "jobLog" property of each Button with actual job log.
+     *
+     * @param actionEvent
+     */
     @FXML
     private void refreshJobLogs(ActionEvent actionEvent) {
-        // TODO: Trigger the background thread that does the following activities:
-        //   1. Read the Jobs list file and create one Button for each Job.
-        //   2. For every given X number of unit periods:
-        //        a. Read the Job log file and set the 'jobLog' member of each button.
-        //        b. Identify the success/failure of the job from the log and change the bg color of the button.
-        //        c. If no job log is found, it means Job has not started.
-        //             GREEN | RED | GRAY
-
         // Monitor the jobs
-        String jobLogsLocation = "";
-        RefreshJobStatus task = new RefreshJobStatus(jobLogsLocation, jobs);
-        ScheduledFuture<?> result = executor.scheduleAtFixedRate(task, 1, 30, TimeUnit.SECONDS);
+        String jobLogsLocation = this.logDir;
+        RefreshJobStatus task = new RefreshJobStatus(jobLogsLocation, this.jobs, this.resultTextArea, appServerCmdTemplate, this.progressBar);
+        ScheduledFuture<?> result = executor.scheduleAtFixedRate(task, 1, 10, TimeUnit.SECONDS);
 
         // Disable the button so that user does not click again and again.
         monitorBtn.setDisable(true);
+        resultTextArea.getStyleClass().add("result-area");
     }
 
     @FXML
     private void stopApplication(ActionEvent event) {
         executor.shutdown();
+
+        // Close the Window
+        Stage stage = (Stage) closeAppBtn.getScene().getWindow();
+        stage.close();
+
+        // Close the first window
+        loginStage.close();
+
+        System.exit(0);
     }
 }
