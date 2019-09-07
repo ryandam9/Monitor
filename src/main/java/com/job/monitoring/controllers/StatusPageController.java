@@ -47,16 +47,10 @@ public class StatusPageController implements Initializable {
     private TextArea resultTextArea;
 
     @FXML
-    private Button monitorBtn;
-
-    @FXML
     private Button closeAppBtn;
 
     @FXML
-    private Label statusMsg;
-
-    @FXML
-    private ProgressBar progressBar;
+    public HBox statusBar;
 
     // Non UI elements
     private List<String> jobList;           // This is set by reading Job names from the Job name file.
@@ -65,6 +59,9 @@ public class StatusPageController implements Initializable {
     ScheduledExecutorService executor;
     private String appServerCmdTemplate;
     private Stage loginStage;
+
+    private ProgressIndicator progressIndicator;
+    private Label statusMsg;
 
     /**
      * This method gets executed first when the Controller is created.
@@ -76,6 +73,19 @@ public class StatusPageController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         jobs = new ArrayList<>();
         executor = Executors.newScheduledThreadPool(2);
+
+        // Add a Status indicator and status msg to the status bar
+        ProgressIndicator progressIndicator = new ProgressIndicator();
+        progressIndicator.setPrefSize(50, 50);
+        progressIndicator.setVisible(true);
+
+        Label statusMsg = new Label();
+        statusMsg.getStyleClass().add("text-field");
+
+        statusBar.getChildren().addAll(progressIndicator, statusMsg);
+
+        this.progressIndicator = progressIndicator;
+        this.statusMsg = statusMsg;
     }
 
     /**
@@ -115,9 +125,6 @@ public class StatusPageController implements Initializable {
             return;
         }
 
-        // Start monitoring jobs right away. No need to wait for User action. Don't show this button.
-        // Trigger an event to start it.
-        monitorBtn.setVisible(false);
         refreshJobLogs(new ActionEvent());
     }
 
@@ -132,11 +139,9 @@ public class StatusPageController implements Initializable {
     private void refreshJobLogs(ActionEvent actionEvent) {
         // Monitor the jobs
         String jobLogsLocation = this.logDir;
-        RefreshJobStatus task = new RefreshJobStatus(jobLogsLocation, this.jobs, this.resultTextArea, appServerCmdTemplate, this.progressBar);
+        RefreshJobStatus task = new RefreshJobStatus(jobLogsLocation, this.jobs, this.resultTextArea, appServerCmdTemplate, this.progressIndicator, this.statusMsg);
         ScheduledFuture<?> result = executor.scheduleAtFixedRate(task, 1, 10, TimeUnit.SECONDS);
 
-        // Disable the button so that user does not click again and again.
-        monitorBtn.setDisable(true);
         resultTextArea.getStyleClass().add("result-area");
     }
 

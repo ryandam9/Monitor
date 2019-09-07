@@ -24,6 +24,10 @@
 
     /* Soumya's purple color */
     -fx-soumya-purple: #7D2996;
+
+    /* Library Assistant */
+    -fx-lib-primarytext : #B2B2B2;
+    -fx-lib-primary : #2A2E37;
 }
 
 .root{
@@ -102,10 +106,10 @@
 .result-area {
     -fx-font-family: "consolas";
     -fx-font-size: 10pt;
-    -fx-control-inner-background: -fx-black;
     -fx-highlight-fill: WHITE;
     -fx-highlight-text-fill: -fx-pure-black;
-    -fx-text-fill: -fx-yellow;
+    -fx-control-inner-background: -fx-light-black;
+    -fx-text-fill: -fx-blue;
 }
 
 .text-area {
@@ -177,7 +181,7 @@
 .scroll-pane .scroll-bar:horizontal:pressed .track ,
 .scroll-pane .scroll-bar:vertical:hover .track,
 .scroll-pane .scroll-bar:vertical:pressed .track{
-     -fx-background-color: derive(#434343,20%);
+     -fx-background-color: derive(-fx-blue,20%);
 	 -fx-opacity: 0.2;
 	 -fx-background-radius: 0em;
 
@@ -186,11 +190,11 @@
 /* The main scrollbar **thumb** CSS class on event of "hover" and "pressed" */
 .scroll-pane .scroll-bar .thumb:hover,
 .scroll-pane .scroll-bar .thumb:pressed{
-    -fx-background-color: derive(black,50%);
+    -fx-background-color: derive(-fx-blue,50%);
 }
 
 .scroll-pane .increment-button:hover ,.scroll-pane .decrement-button:hover {
     -fx-background-color:derive(gray,100%);
-	-fx-border-color:derive(gray,80%);
+	-fx-border-color:derive(-fx-blue,80%);
 	-fx-padding: 5px;
 }

@@ -1,6 +1,7 @@
 package com.job.monitoring.controllers;
 
 import com.job.monitoring.utils.SSHConnection;
+import com.job.monitoring.utils.Utils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class LoginScreenController implements Initializable {
@@ -54,7 +56,27 @@ public class LoginScreenController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        Properties properties = Utils.loadProperties();
 
+        String jumpboxUserIdVal = properties.getProperty("jumpboxUserIdVal", "");
+        String jumpboxIpAddressVal = properties.getProperty("jumpboxIpAddressVal", "");
+        String locJumpboxPrivKeyFileVal = properties.getProperty("locJumpboxPrivKeyFileVal", "");
+
+        String appServerUserIdVal = properties.getProperty("appServerUserIdVal", "");
+        String appServerIpAddressVal = properties.getProperty("appServerIpAddressVal", "");
+        String locappServerPrivKeyFileVal = properties.getProperty("locappServerPrivKeyFileVal", "");
+
+        String jobFileLocation = properties.getProperty("jobFileLocation", "");
+        String logDirectoryLoc = properties.getProperty("logDirectoryLoc", "");
+
+        jumpboxUserId.setText(jumpboxUserIdVal);
+        jumpboxIpAddress.setText(jumpboxIpAddressVal);
+        locJumpboxPrivKeyFile.setText(locJumpboxPrivKeyFileVal);
+        appServerUserId.setText(appServerUserIdVal);
+        appServerIpAddress.setText(appServerIpAddressVal);
+        locappServerPrivKeyFile.setText(locappServerPrivKeyFileVal);
+        jobFile.setText(jobFileLocation);
+        logDirectory.setText(logDirectoryLoc);
     }
 
     @FXML
@@ -77,16 +99,6 @@ public class LoginScreenController implements Initializable {
         // The file that contains Jobs to be executed, available on App Server.
         String jobFileLocation = jobFile.getText();
         String logDirectoryLoc = logDirectory.getText();
-
-        // Remove Later
-        jumpboxUserIdVal = "ec2-user";
-        jumpboxIpAddressVal = "13.210.66.191";
-        locJumpboxPrivKeyFileVal = "C:\\Users\\ryand\\Desktop\\test1.pem";
-        appServerUserIdVal = "ec2-user";
-        appServerIpAddressVal = "54.252.210.0";
-        locappServerPrivKeyFileVal = "/home/ec2-user/test1.pem";
-        jobFileLocation = "/home/ec2-user/test.txt";
-        logDirectoryLoc = "/home/ec2-user";
 
         // Verify if any entry is not keyed in
         if (jumpboxUserIdVal.trim().length() == 0 ||
@@ -204,7 +216,7 @@ public class LoginScreenController implements Initializable {
             String cssFile = new File("resources/css/theme.css").toURI().toURL().toString();
             parent.getStylesheets().add(cssFile);
 
-            stage.setResizable(false);
+//            stage.setResizable(false);
             stage.getIcons().add(new Image(new File("resources/images/circle.png").toURI().toURL().toString()));
             stage.show();
         } catch (IOException ex) {
