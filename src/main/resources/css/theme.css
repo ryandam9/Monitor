@@ -14,6 +14,7 @@
     -fx-blue: #5264AE;
     -fx-dark-blue: #2979FF;
     -fx-pure-black: #000000;
+    -fx-google-blue: #065FD4;
 
     /* Found this style in eenadu.net login page */
     -fx-light-white-gray: #F2F2F2;
@@ -44,9 +45,9 @@
     -fx-font-size: 15px;
     -fx-font-weight: normal;
     -fx-button-type: RAISED;
-    -fx-background-color: -fx-dark-green;
+    -fx-background-color: -fx-google-blue;
     -fx-pref-width: 200;
-    -fx-text-fill: -fx-light-white;
+    -fx-text-fill: white;
     -fx-min-width: 200;
     -fx-font-smoothing-type: gray;
     -fx-border-radius: 10 10 0 0;

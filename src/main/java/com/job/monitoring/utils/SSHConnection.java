@@ -26,6 +26,7 @@ public class SSHConnection {
             jsch.addIdentity(privateKeyFile);
             session = jsch.getSession(userId, HostIpAddress, 22);
             session.setConfig(config);
+            session.setTimeout(50);
             session.connect();
         } catch (Exception ex) {
             String msg = "Unable to Create SSH Connection to Jumpbox : " + HostIpAddress + " Using Priv Key File: " + privateKeyFile;
