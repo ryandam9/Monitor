@@ -1,35 +1,30 @@
 package com.job.monitoring.utils;
 
 import com.jcraft.jsch.*;
+import javafx.concurrent.Task;
 
 import java.io.InputStream;
 
 public class SSHConnection {
-    private String userId;
-    private String HostIpAddress;
-    private String privateKeyFile;
+    public static String userId;
+    public static String hostIpAddress;
+    public static String privateKeyFile;
+    public static Session session;
 
-    private static Session session;
-
-    public SSHConnection(String userId, String HostIpAddress, String privateKeyFile) {
-        this.userId = userId;
-        this.HostIpAddress = HostIpAddress;
-        this.privateKeyFile = privateKeyFile;
-    }
-
-    public void createSession() throws Exception {
+    public static void createSession() throws Exception {
         JSch jsch = new JSch();
         java.util.Properties config = new java.util.Properties();
         config.put("StrictHostKeyChecking", "no");
 
         try {
             jsch.addIdentity(privateKeyFile);
-            session = jsch.getSession(userId, HostIpAddress, 22);
+            session = jsch.getSession(userId, hostIpAddress, 22);
             session.setConfig(config);
-            session.setTimeout(50);
+            session.setTimeout(2000);
             session.connect();
         } catch (Exception ex) {
-            String msg = "Unable to Create SSH Connection to Jumpbox : " + HostIpAddress + " Using Priv Key File: " + privateKeyFile;
+            ex.printStackTrace();
+            String msg = "Unable to Create SSH Connection to Jumpbox : " + hostIpAddress + " Using Priv Key File: " + privateKeyFile;
             msg = msg + "; Verify the User name/Host IP/Private Key file !!!";
             throw new Exception(msg);
         }

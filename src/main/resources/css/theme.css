@@ -92,7 +92,7 @@
 
 .status-bar {
     -fx-font-family: "consolas";
-    -fx-font-size: 12pt;
+    -fx-font-size: 10pt;
 }
 
 .result-area-like-unix {

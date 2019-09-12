@@ -62,6 +62,7 @@ public class StatusPageController implements Initializable {
 
     private ProgressIndicator progressIndicator;
     private Label statusMsg;
+    private String jobLogLocation;
 
     /**
      * This method gets executed first when the Controller is created.
@@ -99,11 +100,12 @@ public class StatusPageController implements Initializable {
      * @param jobList
      * @param logDir
      */
-    public void setJobList(Stage loginStage, List<String> jobList, String logDir, String appServerCmdTemplate) {
+    public void setJobList(Stage loginStage, String jobLogLocation, List<String> jobList, String logDir, String appServerCmdTemplate) {
         this.jobList = jobList;
         this.logDir = logDir;
         this.appServerCmdTemplate = appServerCmdTemplate;
         this.loginStage = loginStage;
+        this.jobLogLocation = jobLogLocation;
 
         try {
             jobList.forEach(name -> {
