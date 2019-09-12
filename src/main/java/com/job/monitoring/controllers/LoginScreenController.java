@@ -48,7 +48,10 @@ public class LoginScreenController implements Initializable {
     private TextField logDirectory;
 
     @FXML
-    private Button monitorBtn;
+    private Button verifyBtn;
+
+    @FXML
+    public Button monitorBtn;
 
     @FXML
     private HBox statusBar;
@@ -86,6 +89,8 @@ public class LoginScreenController implements Initializable {
         progressIndicator.setPrefSize(50, 50);
         progressIndicator.setVisible(false);
         statusBar.getChildren().addAll(progressIndicator);
+
+        monitorBtn.setVisible(false);
     }
 
     @FXML
@@ -129,8 +134,62 @@ public class LoginScreenController implements Initializable {
         details.put("jobLog", jobFileLocation);
         details.put("jobLogsLocation", logDirectoryLoc);
 
-        Thread t = new ValidateInputsThread(details, statusMsg, progressIndicator, monitorBtn);
+        Thread t = new ValidateInputsThread(details, statusMsg, progressIndicator, verifyBtn, monitorBtn);
         t.setDaemon(false);
         t.start();
+    }
+
+    @FXML
+    private void loadStatusWindow(ActionEvent event) {
+        // Fetch App Server Connection Details
+        String appServerUserIdVal = appServerUserId.getText();
+        String appServerIpAddressVal = appServerIpAddress.getText();
+        String locappServerPrivKeyFileVal = locappServerPrivKeyFile.getText();
+
+        String jobLogLocation = jobFile.getText();
+        String logDirectoryLoc = logDirectory.getText();
+
+        String appServerCmdTemplate = "ssh -i " + locappServerPrivKeyFileVal + " " + appServerUserIdVal + "@" + appServerIpAddressVal + " ";
+
+        try {
+            URL url = new File("resources/ui/status.fxml").toURI().toURL();
+            FXMLLoader loader = new FXMLLoader(url);
+            Parent parent = (Parent) loader.load();
+            StatusPageController statusPageController = loader.getController();
+
+            List<String> l = new ArrayList<>();
+            // Here read the jobLog and identify job names.
+            l.add("job1");
+            l.add("job2");
+            l.add("job3");
+            l.add("job4");
+            l.add("job5");
+            l.add("job6");
+            l.add("job7");
+            l.add("job8");
+            l.add("job9");
+            l.add("job10");
+            l.add("job11");
+            l.add("job12");
+            l.add("job13");
+            l.add("job14");
+
+            // Initial Window Stage
+            Stage loginStage = (Stage) statusMsg.getScene().getWindow();
+
+            // Pass the Jobs list file name to the next Controller.
+            statusPageController.setJobList(loginStage, jobLogLocation, l, logDirectoryLoc, appServerCmdTemplate);
+
+            Stage stage = new Stage(StageStyle.DECORATED);
+            stage.setTitle("Job Monitor");
+            stage.setScene(new Scene(parent));
+
+            String cssFile = new File("resources/css/theme.css").toURI().toURL().toString();
+            parent.getStylesheets().add(cssFile);
+            stage.getIcons().add(new Image(new File("resources/images/circle.png").toURI().toURL().toString()));
+            stage.show();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 }

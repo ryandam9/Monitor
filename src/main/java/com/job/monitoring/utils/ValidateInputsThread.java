@@ -23,16 +23,19 @@ public class ValidateInputsThread extends Thread {
     private Map<String, String> details;
     private Label statusMsg;
     private ProgressIndicator progressIndicator;
-    private Button button;
+    private Button verfiyBtn;
+    private Button monitorBtn;
 
     public ValidateInputsThread(Map<String, String> details,
                                 Label statusMsg,
                                 ProgressIndicator progressIndicator,
-                                Button button) {
+                                Button verifyBtn,
+                                Button monitorBtn) {
         this.details = details;
         this.statusMsg = statusMsg;
         this.progressIndicator = progressIndicator;
-        this.button = button;
+        this.verfiyBtn = verifyBtn;
+        this.monitorBtn = monitorBtn;
     }
 
     @Override
@@ -99,7 +102,8 @@ public class ValidateInputsThread extends Thread {
             String msg = msg1 + "\n" + "Job file: " + jobLog + " is available on App server!";
             Platform.runLater(() -> statusMsg.setText(msg));
             Platform.runLater(() -> progressIndicator.setVisible(false));
-            Platform.runLater(() -> button.setDisable(true));
+            Platform.runLater(() -> verfiyBtn.setDisable(true));
+            Platform.runLater(() -> monitorBtn.setVisible(true));
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             String msg = msg1 + "\n" + "Unable to read job file: " + jobLog + " on App Server!!! Verify !!!";
@@ -107,56 +111,5 @@ public class ValidateInputsThread extends Thread {
             Platform.runLater(() -> progressIndicator.setVisible(false));
             return;
         }
-
-        // Open Status Window
-        String appServerCmdTemplate = "ssh -i " + appServerPrivateKeyFile + " " + appServerUserId + "@" + appServerIpAddress + " ";
-        loadStatusWindow(jobLog, jobLogsLocation, appServerCmdTemplate);
-    }
-
-    void loadStatusWindow(String jobLogLocation, String logDirectoryLoc, String appServerCmdTemplate) {
-
-     Platform.runLater(() -> {
-         try {
-             URL url = new File("resources/ui/status.fxml").toURI().toURL();
-             FXMLLoader loader = new FXMLLoader(url);
-             Parent parent = (Parent) loader.load();
-             StatusPageController statusPageController = loader.getController();
-             System.out.println(statusPageController);
-
-             List<String> l = new ArrayList<>();
-             // Here read the jobLog and identify job names.
-             l.add("job1");
-             l.add("job2");
-             l.add("job3");
-             l.add("job4");
-             l.add("job5");
-             l.add("job6");
-             l.add("job7");
-             l.add("job8");
-             l.add("job9");
-             l.add("job10");
-             l.add("job11");
-             l.add("job12");
-             l.add("job13");
-             l.add("job14");
-
-             // Initial Window Stage
-             Stage loginStage = (Stage) statusMsg.getScene().getWindow();
-
-             // Pass the Jobs list file name to the next Controller.
-             statusPageController.setJobList(loginStage, jobLogLocation, l, logDirectoryLoc, appServerCmdTemplate);
-
-             Stage stage = new Stage(StageStyle.DECORATED);
-             stage.setTitle("Job Monitor");
-             stage.setScene(new Scene(parent));
-
-             String cssFile = new File("resources/css/theme.css").toURI().toURL().toString();
-             parent.getStylesheets().add(cssFile);
-             stage.getIcons().add(new Image(new File("resources/images/circle.png").toURI().toURL().toString()));
-             stage.show();
-         } catch (IOException ex) {
-             ex.printStackTrace();
-         }
-     });
-    }
+     }
 }

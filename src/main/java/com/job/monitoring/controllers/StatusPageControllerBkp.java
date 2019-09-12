@@ -1,17 +1,14 @@
 package com.job.monitoring.controllers;
 
 import com.job.monitoring.ui.JobDetail;
-import com.job.monitoring.ui.TileButton;
 import com.job.monitoring.utils.RefreshJobStatus;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -23,7 +20,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class StatusPageController implements Initializable {
+public class StatusPageControllerBkp implements Initializable {
     // UI Elements
     @FXML
     private HBox headerBox;
@@ -36,6 +33,9 @@ public class StatusPageController implements Initializable {
 
     @FXML
     private ScrollPane scrollPane1;
+
+    @FXML
+    private VBox jobListView;
 
     @FXML
     private AnchorPane anchorPane2;
@@ -55,11 +55,12 @@ public class StatusPageController implements Initializable {
     // Non UI elements
     private List<String> jobList;           // This is set by reading Job names from the Job name file.
     private String logDir;
-    private List<TileButton> jobs;           // List of Buttons, each button represents a job.
+    private List<JobDetail> jobs;           // List of Buttons, each button represents a job.
     ScheduledExecutorService executor;
     private String appServerCmdTemplate;
     private Stage loginStage;
 
+    private ProgressIndicator progressIndicator;
     private Label statusMsg;
     private String jobLogLocation;
 
@@ -71,16 +72,21 @@ public class StatusPageController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        Alert a = new Alert(Alert.AlertType.CONFIRMATION, "Hello World", ButtonType.OK);
-
         jobs = new ArrayList<>();
         executor = Executors.newScheduledThreadPool(2);
 
+        // Add a Status indicator and status msg to the status bar
+        ProgressIndicator progressIndicator = new ProgressIndicator();
+        progressIndicator.setPrefSize(50, 50);
+        progressIndicator.setVisible(true);
+
         Label statusMsg = new Label();
         statusMsg.getStyleClass().add("text-field");
-        this.statusMsg = statusMsg;
 
-        statusBar.getChildren().addAll(statusMsg);
+        statusBar.getChildren().addAll(progressIndicator, statusMsg);
+
+        this.progressIndicator = progressIndicator;
+        this.statusMsg = statusMsg;
     }
 
     /**
@@ -101,34 +107,27 @@ public class StatusPageController implements Initializable {
         this.loginStage = loginStage;
         this.jobLogLocation = jobLogLocation;
 
-        TilePane tilePane = new TilePane(Orientation.HORIZONTAL);
-        tilePane.setHgap(10.0);
-        tilePane.setVgap(10.0);
-        tilePane.setPadding(new Insets(20, 20, 20, 20));
-        tilePane.setMaxWidth(Region.USE_PREF_SIZE);
-
         try {
             jobList.forEach(name -> {
-                TileButton tile = new TileButton(name, "BLACK", "blue");
+                JobDetail btn = new JobDetail(name, "");
+                btn.getStyleClass().add("button-raised");
 
-                tilePane.getChildren().add(tile);
+                jobListView.getChildren().add(btn);
 
                 // Store all Button references
-                jobs.add(tile);
+                jobs.add(btn);
 
-                tile.getButton().setOnAction(event -> {
-                    resultTextArea.setText(tile.getJobLog());
+                btn.setOnAction(event -> {
+                    resultTextArea.setText(btn.getJobLog());
                 });
             });
+
         } catch (Exception ex) {
-            resultTextArea.setText(ex.getMessage());
+            statusMsg.setText(ex.getMessage());
             return;
         }
 
-        scrollPane1.setContent(tilePane);
-        scrollPane1.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        scrollPane1.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-       // refreshJobLogs();
+        refreshJobLogs(new ActionEvent());
     }
 
 
@@ -136,16 +135,18 @@ public class StatusPageController implements Initializable {
      * Read job logs on App Server and updates the background color of the Buttons. In addition to this, sets
      * "jobLog" property of each Button with actual job log.
      *
+     * @param actionEvent
      */
-//    private void refreshJobLogs() {
-//        // Monitor the jobs
-//        String jobLogsLocation = this.logDir;
-//        RefreshJobStatus task = new RefreshJobStatus(jobLogsLocation, this.jobs, this.resultTextArea, appServerCmdTemplate, this.progressIndicator, this.statusMsg);
-//        ScheduledFuture<?> result = executor.scheduleAtFixedRate(task, 1, 10, TimeUnit.SECONDS);
-//
-//        resultTextArea.getStyleClass().add("result-area");
-//    }
-//
+    @FXML
+    private void refreshJobLogs(ActionEvent actionEvent) {
+        // Monitor the jobs
+        String jobLogsLocation = this.logDir;
+        RefreshJobStatus task = new RefreshJobStatus(jobLogsLocation, this.jobs, this.resultTextArea, appServerCmdTemplate, this.progressIndicator, this.statusMsg);
+        ScheduledFuture<?> result = executor.scheduleAtFixedRate(task, 1, 10, TimeUnit.SECONDS);
+
+        resultTextArea.getStyleClass().add("result-area");
+    }
+
     @FXML
     private void stopApplication(ActionEvent event) {
         executor.shutdown();
@@ -159,5 +160,4 @@ public class StatusPageController implements Initializable {
 
         System.exit(0);
     }
-
 }
