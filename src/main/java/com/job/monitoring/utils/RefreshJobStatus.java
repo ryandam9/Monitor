@@ -1,94 +1,98 @@
 package com.job.monitoring.utils;
 
-import com.job.monitoring.ui.JobDetail;
+import com.job.monitoring.ui.TileButton;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextArea;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This Thread is executed by the Executor Server, every X period units. For each job, the thread fetches
  * the job's contents from the App Server, and stores in the Button's "jobLog" property.
- *
+ * <p>
  * Uses "Platform.runLater()" to control UI elements.
  */
 
 public class RefreshJobStatus implements Runnable {
-    private final String jobLogsLocation;
-    private List<JobDetail> jobs;
-    private TextArea textArea;
+    private List<TileButton> jobs;
+    private final String logFile;
+    private final String logDir;
     private String appServerCmdTemplate;
-    private ProgressIndicator progressIndicator;
-    private Label status;
+    private TextArea result;
+    private Label statusMsg;
 
-    public RefreshJobStatus(String jobLogsLocation, List<JobDetail> jobs, TextArea textArea, String appServerCmdTemplate,
-                            ProgressIndicator progressIndicator,
-                            Label status) {
-        this.jobLogsLocation = jobLogsLocation;
+    public RefreshJobStatus(List<TileButton> jobs, String logFile, String logDir, String appServerCmdTemplate,
+                            Label statusMsg) {
         this.jobs = jobs;
-        this.textArea = textArea;
+        this.logFile = logFile;
+        this.logDir = logDir;
         this.appServerCmdTemplate = appServerCmdTemplate;
-        this.progressIndicator = progressIndicator;
-        this.status = status;
+        this.statusMsg = statusMsg;
     }
 
     @Override
     public void run() {
-        for (JobDetail job : jobs) {
+        String cmd = appServerCmdTemplate + "'cat " + logFile + "'";
+        String jobFile = SSHConnection.executeRemoteCommand(cmd);
+
+        Map<String, String> logFileMap = new HashMap<>();
+
+        for (String line : jobFile.split("\n")) {
+            String jobName = line.split(" ")[0];
+            String status = line.split(" ")[3];
+            logFileMap.put(jobName, status);
+        }
+
+        /* Now go through all the Tiles and update Status */
+        for (final TileButton tile : jobs) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ex) {
                 System.out.println("Background thread has been Interrupted!!");
             }
 
-            String cmd = appServerCmdTemplate + "'cat " + jobLogsLocation + "/" + job.getText() + ".dat' ";
+            final String targetJob = tile.getJobName();
 
             try {
-                // Read log file from the App Server
-                String log = SSHConnection.executeRemoteCommand(cmd);
-                job.setJobLog(log);
+                final boolean showProgressIndicator;
+                String statusColor = "";
+                final String jobStatus = logFileMap.get(targetJob);
+
+                if (jobStatus.equalsIgnoreCase("not-started")) {
+                    showProgressIndicator = false;
+                    statusColor = "#F2F2F2";
+                } else if (jobStatus.equalsIgnoreCase("success")) {
+                    showProgressIndicator = false;
+                    statusColor = "#1EB980";
+                } else if (jobStatus.equalsIgnoreCase("failed")) {
+                    showProgressIndicator = false;
+                    statusColor = "#7D2996";
+                } else {
+                    showProgressIndicator = true;
+                    statusColor = "#B4C1CC";
+                }
 
                 Platform.runLater(() -> {
-                    status.setText("Monitoring job: " + job.getText() + ", Log has been retrieved from App Server");
+                    tile.getStatusBtn().setText(jobStatus);
+                    tile.getProgressIndicator().setVisible(showProgressIndicator);
+                    statusMsg.setText(jobStatus);
                 });
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
 
-                // Verify the log for any errors.
-                String logUpper = log.toUpperCase();
-                String status;
+            try {
+                cmd = appServerCmdTemplate + "'cat " + logDir + "/" + targetJob + "'";
+                String logFileOutput = SSHConnection.executeRemoteCommand(cmd);
 
-                if (logUpper.contains("ERROR"))
-                    status = "failure";
-                else
-                    status = "success";
-
-                final String style;
-
-                // Determine Success or failure & Change Color.
-                if (status.equals("success"))
-                    style = "-fx-background-color: GREEN";
-                else if (status.equals("failure"))
-                    style = "-fx-background-color: #7D2996";
-                else
-                    style = "-fx-background-color: GRAY";
-
-                // Background thread cannot access UI elements. Following stmt creates a task and executes
-                // on the JavaFX application thread later.
                 Platform.runLater(() -> {
-                    job.setStyle(style);
+                    tile.setJobLog(logFileOutput);
                 });
-            } catch (IllegalArgumentException e) {
-//                StringWriter sw = new StringWriter();
-//                PrintWriter pw = new PrintWriter(sw);
-//                e.printStackTrace(pw);
-//                String sStackTrace = sw.toString(); // stack trace as a string
-//                Platform.runLater(() -> textArea.setText(cmd + "\n" + sStackTrace));
-                Platform.runLater(() -> {
-                    status.setText("Monitoring Job: " + job.getText() + ": " + e.getMessage());
-                });
-
-                Platform.runLater(() -> job.setStyle("-fx-background-color: GRAY"));
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         }
     }

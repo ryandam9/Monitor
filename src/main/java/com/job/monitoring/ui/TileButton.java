@@ -1,35 +1,36 @@
 package com.job.monitoring.ui;
 
-import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.VBox;
 
-public class TileButton extends VBox {
-    private Label label;
-    private ProgressIndicator progressIndicator;
-    private Button button;
+public final class TileButton extends VBox {
+    private final String jobName;
+    private final Label label;
+    private final ProgressIndicator progressIndicator;
+    private final Button statusBtn;
     private String jobLog;
 
-    public TileButton(String jobName, String tileColor, String fontColor) {
-        setPrefSize(100, 100);
-        setSpacing(10);
+    public TileButton(String jobName, String tileColor, String fontColor, String jobStatus, boolean showProgressIndicator, String statusColor) {
+        this.getStyleClass().add("tile-box");
         setStyle("-fx-background-color: " + tileColor + ";");
-        setPadding(new Insets(10, 10, 10, 10));
+
+        this.jobName = jobName;
 
         // Job name
-        Label l1 = createLabel(jobName, fontColor);
+        label = createLabel(jobName, fontColor);
+        label.getStyleClass().add("tile-label");
 
         // Progress Indicator
-        ProgressIndicator progressIndicator = new ProgressIndicator();
-        progressIndicator.setPrefSize(70, 70);
-        progressIndicator.setVisible(false);
+        progressIndicator = new ProgressIndicator();
+        progressIndicator.getStyleClass().add("progress-indicator");
+        progressIndicator.setVisible(showProgressIndicator);
 
         // Job Status Color
-        Button statusBtn = new Button("");
+        statusBtn = makeButton(jobStatus, statusColor);
 
-        this.getChildren().addAll(l1, progressIndicator, statusBtn);
+        getChildren().addAll(label, progressIndicator, statusBtn);
     }
 
     private Label createLabel(String text, String color) {
@@ -38,9 +39,10 @@ public class TileButton extends VBox {
         return label;
     }
 
-    private Button makeButton(String name) {
+    private Button makeButton(String name, String statusColor) {
         Button button = new Button(name);
-        button.getStyleClass().add("button-raised");
+        button.getStyleClass().add("tile-button");
+        button.setStyle("-fx-background-color:" + statusColor);
         return button;
     }
 
@@ -48,8 +50,8 @@ public class TileButton extends VBox {
         return progressIndicator;
     }
 
-    public Button getButton() {
-        return button;
+    public Button getStatusBtn() {
+        return statusBtn;
     }
 
     public void setJobLog(String log) {
@@ -58,5 +60,9 @@ public class TileButton extends VBox {
 
     public String getJobLog() {
         return this.jobLog;
+    }
+
+    public String getJobName() {
+        return jobName;
     }
 }

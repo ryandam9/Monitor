@@ -1,5 +1,7 @@
 package com.job.monitoring.controllers;
 
+import com.job.monitoring.ui.TileButton;
+import com.job.monitoring.utils.SSHConnection;
 import com.job.monitoring.utils.Utils;
 import com.job.monitoring.utils.ValidateInputsThread;
 import javafx.event.ActionEvent;
@@ -155,37 +157,33 @@ public class LoginScreenController implements Initializable {
             URL url = new File("resources/ui/status.fxml").toURI().toURL();
             FXMLLoader loader = new FXMLLoader(url);
             Parent parent = (Parent) loader.load();
+            String cssFile = new File("resources/css/tile_button.css").toURI().toURL().toString();
+            parent.getStylesheets().add(cssFile);
+
             StatusPageController statusPageController = loader.getController();
 
             List<String> l = new ArrayList<>();
-            // Here read the jobLog and identify job names.
-            l.add("job1");
-            l.add("job2");
-            l.add("job3");
-            l.add("job4");
-            l.add("job5");
-            l.add("job6");
-            l.add("job7");
-            l.add("job8");
-            l.add("job9");
-            l.add("job10");
-            l.add("job11");
-            l.add("job12");
-            l.add("job13");
-            l.add("job14");
+            List<String> statuses = new ArrayList<>();
+
+            // Read the Job log file and identify job names to be monitored.
+            String jobFile = SSHConnection.executeRemoteCommand(appServerCmdTemplate + "cat " + jobLogLocation);
+            for(String line: jobFile.split("\n")) {
+                String jobName = line.split(" ")[0];
+                String status = line.split(" ")[3];
+
+                l.add(jobName);
+                statuses.add(status);
+            }
 
             // Initial Window Stage
             Stage loginStage = (Stage) statusMsg.getScene().getWindow();
 
             // Pass the Jobs list file name to the next Controller.
-            statusPageController.setJobList(loginStage, jobLogLocation, l, logDirectoryLoc, appServerCmdTemplate);
+            statusPageController.setJobList(loginStage, jobLogLocation, l, statuses, logDirectoryLoc, appServerCmdTemplate);
 
             Stage stage = new Stage(StageStyle.DECORATED);
             stage.setTitle("Job Monitor");
             stage.setScene(new Scene(parent));
-
-            String cssFile = new File("resources/css/theme.css").toURI().toURL().toString();
-            parent.getStylesheets().add(cssFile);
             stage.getIcons().add(new Image(new File("resources/images/circle.png").toURI().toURL().toString()));
             stage.show();
         } catch (IOException ex) {

@@ -1,6 +1,5 @@
 package com.job.monitoring.controllers;
 
-import com.job.monitoring.ui.JobDetail;
 import com.job.monitoring.ui.TileButton;
 import com.job.monitoring.utils.RefreshJobStatus;
 import javafx.event.ActionEvent;
@@ -9,9 +8,10 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -94,7 +94,10 @@ public class StatusPageController implements Initializable {
      * @param jobList
      * @param logDir
      */
-    public void setJobList(Stage loginStage, String jobLogLocation, List<String> jobList, String logDir, String appServerCmdTemplate) {
+    public void setJobList(Stage loginStage, String jobLogLocation,
+                           List<String> jobList,
+                           List<String> statuses,
+                           String logDir, String appServerCmdTemplate) {
         this.jobList = jobList;
         this.logDir = logDir;
         this.appServerCmdTemplate = appServerCmdTemplate;
@@ -105,47 +108,62 @@ public class StatusPageController implements Initializable {
         tilePane.setHgap(10.0);
         tilePane.setVgap(10.0);
         tilePane.setPadding(new Insets(20, 20, 20, 20));
+        tilePane.setPrefColumns(3);
         tilePane.setMaxWidth(Region.USE_PREF_SIZE);
 
-        try {
-            jobList.forEach(name -> {
-                TileButton tile = new TileButton(name, "BLACK", "blue");
+        boolean showProgressIndicator = false;
+        String statusColor = "";
 
-                tilePane.getChildren().add(tile);
+        for (int i = 0; i < jobList.size(); i++) {
+            String jobStatus = statuses.get(i);
 
-                // Store all Button references
-                jobs.add(tile);
+            if (jobStatus.equalsIgnoreCase("not-started")) {
+                showProgressIndicator = false;
+                statusColor = "#F2F2F2";
+            } else if (jobStatus.equalsIgnoreCase("success")) {
+                showProgressIndicator = false;
+                statusColor = "#1EB980";
+            } else if (jobStatus.equalsIgnoreCase("failed")) {
+                showProgressIndicator = false;
+                statusColor = "#7D2996";
+            } else if (jobStatus.equalsIgnoreCase("running")) {
+                showProgressIndicator = true;
+                statusColor = "#B4C1CC";
+            }
 
-                tile.getButton().setOnAction(event -> {
-                    resultTextArea.setText(tile.getJobLog());
-                });
+            TileButton tile = new TileButton(jobList.get(i), "BLACK", "yellow", statuses.get(i), showProgressIndicator, statusColor);
+            tilePane.getChildren().addAll(tile);
+
+            // Store all Button references
+            jobs.add(tile);
+
+            // When the button is clicked, populate text area with Job log.
+            tile.getStatusBtn().setOnAction(ActionEvent -> {
+                resultTextArea.setText(tile.getJobLog());
             });
-        } catch (Exception ex) {
-            resultTextArea.setText(ex.getMessage());
-            return;
         }
 
         scrollPane1.setContent(tilePane);
-        scrollPane1.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        scrollPane1.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-       // refreshJobLogs();
+        scrollPane1.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        scrollPane1.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        refreshJobLogs();
     }
-
 
     /**
      * Read job logs on App Server and updates the background color of the Buttons. In addition to this, sets
      * "jobLog" property of each Button with actual job log.
-     *
      */
-//    private void refreshJobLogs() {
-//        // Monitor the jobs
-//        String jobLogsLocation = this.logDir;
-//        RefreshJobStatus task = new RefreshJobStatus(jobLogsLocation, this.jobs, this.resultTextArea, appServerCmdTemplate, this.progressIndicator, this.statusMsg);
-//        ScheduledFuture<?> result = executor.scheduleAtFixedRate(task, 1, 10, TimeUnit.SECONDS);
-//
-//        resultTextArea.getStyleClass().add("result-area");
-//    }
-//
+    private void refreshJobLogs() {
+        // Monitor the jobs
+        String logDir = this.logDir;
+        String logFile = this.jobLogLocation;
+
+        RefreshJobStatus task = new RefreshJobStatus(this.jobs, logFile, logDir, this.appServerCmdTemplate, statusMsg);
+        ScheduledFuture<?> result = executor.scheduleAtFixedRate(task, 1, 10, TimeUnit.SECONDS);
+
+        resultTextArea.getStyleClass().add("result-area");
+    }
+
     @FXML
     private void stopApplication(ActionEvent event) {
         executor.shutdown();

@@ -201,3 +201,8 @@
 	-fx-border-color:derive(-fx-blue,80%);
 	-fx-padding: 5px;
 }
+
+/* To fill the area not occupied by Scroll Pane */
+.scroll-pane .viewport {
+  -fx-background-color: -fx-light-black ;
+}
