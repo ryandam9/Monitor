@@ -109,8 +109,8 @@
     -fx-font-size: 10pt;
     -fx-highlight-fill: WHITE;
     -fx-highlight-text-fill: -fx-pure-black;
-    -fx-control-inner-background: WHITE;
-    -fx-text-fill: -fx-blue;
+    -fx-control-inner-background: -fx-pure-black;
+    -fx-text-fill: -fx-yellow;
 }
 
 /*

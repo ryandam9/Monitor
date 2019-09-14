@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
+import static com.job.monitoring.utils.Utils.logStackTrace;
+
 public class LoginScreenController implements Initializable {
     @FXML
     private TextField jumpboxUserId;
@@ -92,7 +94,7 @@ public class LoginScreenController implements Initializable {
         progressIndicator.setVisible(false);
         statusBar.getChildren().addAll(progressIndicator);
 
-        monitorBtn.setVisible(false);
+        monitorBtn.setDisable(true);
     }
 
     @FXML
@@ -187,7 +189,7 @@ public class LoginScreenController implements Initializable {
             stage.getIcons().add(new Image(new File("resources/images/circle.png").toURI().toURL().toString()));
             stage.show();
         } catch (IOException ex) {
-            ex.printStackTrace();
+            logStackTrace(ex);
         }
     }
 }

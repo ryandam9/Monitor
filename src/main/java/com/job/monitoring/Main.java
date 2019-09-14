@@ -10,10 +10,12 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.net.URL;
 
+import static com.job.monitoring.utils.AppLogging.logger;
+
 public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
-        System.out.println("Job Monitor application is getting started!");
+        logger.debug("Job Monitor application is getting started!");
 
         URL url = new File("resources/ui/login.fxml").toURI().toURL();
         Parent root = FXMLLoader.load(url);

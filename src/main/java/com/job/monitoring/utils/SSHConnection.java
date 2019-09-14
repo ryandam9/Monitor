@@ -5,6 +5,9 @@ import javafx.concurrent.Task;
 
 import java.io.InputStream;
 
+import static com.job.monitoring.utils.AppLogging.logger;
+import static com.job.monitoring.utils.Utils.logStackTrace;
+
 public class SSHConnection {
     public static String userId;
     public static String hostIpAddress;
@@ -23,7 +26,7 @@ public class SSHConnection {
             session.setTimeout(2000);
             session.connect();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logStackTrace(ex);
             String msg = "Unable to Create SSH Connection to Jumpbox : " + hostIpAddress + " Using Priv Key File: " + privateKeyFile;
             msg = msg + "; Verify the User name/Host IP/Private Key file !!!";
             throw new Exception(msg);
@@ -67,17 +70,17 @@ public class SSHConnection {
                 }
             }
         } catch (JSchException jschEx) {
-            System.out.println("Exception occurred when executing command " + command);
+            logStackTrace(jschEx);
             jschEx.getStackTrace();
             throw new IllegalArgumentException("Exception occurred when executing command " + command);
         } catch (Exception exception) {
-            System.out.println("Exception occurred when executing command " + command);
+            logStackTrace(exception);
             exception.printStackTrace();
             throw new IllegalArgumentException("Exception occurred when executing command " + command);
         }
 
-        System.out.println("Remote Command: " + command);
-        System.out.println("Result: " + result.toString().trim());
+        logger.debug("Remote Command: " + command);
+        logger.debug("Result: " + result.toString().trim());
 
         if (exitStatus == 0) {
             return result.toString().trim();

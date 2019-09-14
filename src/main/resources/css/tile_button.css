@@ -40,7 +40,7 @@
     -fx-font-size: 15px;
     -fx-background-color: -fx-google-blue;
     -fx-pref-width: 150;
-    -fx-text-fill: -fx-yellow;
+    -fx-text-fill: -fx-pure-black;
 }
 
 .tile-button:hover {

@@ -7,6 +7,8 @@ import javafx.scene.control.ProgressIndicator;
 
 import java.util.Map;
 
+import static com.job.monitoring.utils.Utils.logStackTrace;
+
 public class ValidateInputsThread extends Thread {
     private Map<String, String> details;
     private Label statusMsg;
@@ -50,7 +52,7 @@ public class ValidateInputsThread extends Thread {
         try {
             SSHConnection.createSession();
         } catch (Exception e) {
-            e.printStackTrace();
+            logStackTrace(e);
             Platform.runLater(() -> statusMsg.setText(e.getMessage()));
             Platform.runLater(() -> progressIndicator.setVisible(false));
             return;
@@ -63,6 +65,7 @@ public class ValidateInputsThread extends Thread {
         try {
             output = SSHConnection.executeRemoteCommand("uname -o");
         } catch (Exception e) {
+            logStackTrace(e);
             Platform.runLater(() -> statusMsg.setText("Unable to execute command on the Jumpbox: " + e.getMessage()));
             Platform.runLater(() -> progressIndicator.setVisible(false));
             return;
@@ -76,7 +79,7 @@ public class ValidateInputsThread extends Thread {
             output = SSHConnection.executeRemoteCommand(cmd);
             msg1 = msg1 + "\n" + "Connectivity from Jumpbox to App Server has been established. App Server OS: " + output;
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            logStackTrace(e);
             String msg = msg1 + "\n" + "Unable to connect from " + jumpBoxIpAddress + " to " + appServerIpAddress;
             Platform.runLater(() -> statusMsg.setText(msg));
             Platform.runLater(() -> progressIndicator.setVisible(false));
@@ -91,12 +94,13 @@ public class ValidateInputsThread extends Thread {
             Platform.runLater(() -> statusMsg.setText(msg));
             Platform.runLater(() -> progressIndicator.setVisible(false));
             Platform.runLater(() -> verfiyBtn.setDisable(true));
-            Platform.runLater(() -> monitorBtn.setVisible(true));
+            Platform.runLater(() -> monitorBtn.setDisable(false));
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            logStackTrace(e);
             String msg = msg1 + "\n" + "Unable to read job file: " + jobLog + " on App Server!!! Verify !!!";
             Platform.runLater(() -> statusMsg.setText(msg));
             Platform.runLater(() -> progressIndicator.setVisible(false));
+
             return;
         }
     }

@@ -2,7 +2,11 @@ package com.job.monitoring.utils;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Properties;
+
+import static com.job.monitoring.utils.AppLogging.logger;
 
 public class Utils {
     public static Properties loadProperties() {
@@ -17,5 +21,13 @@ public class Utils {
         }
 
         return prop;
+    }
+
+    public static void logStackTrace(Exception e) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        e.printStackTrace(pw);
+        String sStackTrace = sw.toString(); // stack trace as a string
+        logger.debug(sStackTrace);
     }
 }
