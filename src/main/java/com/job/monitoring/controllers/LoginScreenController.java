@@ -187,7 +187,7 @@ public class LoginScreenController implements Initializable {
 
             Stage stage = new Stage(StageStyle.DECORATED);
             stage.setTitle("Job Monitor");
-            stage.setScene(new Scene(parent));
+            stage.setScene(new Scene(parent, 1500, 1000));
             stage.getIcons().add(new Image(new File("resources/images/circle.png").toURI().toURL().toString()));
             stage.show();
         } catch (IOException ex) {

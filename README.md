@@ -23,9 +23,9 @@ My main focus was to see how I could develop a JavaFX application rather than wh
 
 ### Screen shots
 
-![](./images/screen-1.JPG)
+![](./images/monitor1.gif)
 
-![](./images/screen-2.JPG)
+
 
 ****
 

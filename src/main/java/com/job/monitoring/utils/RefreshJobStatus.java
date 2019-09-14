@@ -53,7 +53,7 @@ public class RefreshJobStatus implements Runnable {
         /* Now go through all the Tiles and update Status */
         for (final TileButton tile : jobs) {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(100);
             } catch (InterruptedException ex) {
                 logger.debug("Background thread has been Interrupted!!");
             }

@@ -161,7 +161,7 @@ public class StatusPageController implements Initializable {
         String logFile = this.jobLogLocation;
 
         RefreshJobStatus task = new RefreshJobStatus(this.jobs, logFile, logDir, this.appServerCmdTemplate, statusMsg);
-        ScheduledFuture<?> result = executor.scheduleAtFixedRate(task, 1, 10, TimeUnit.SECONDS);
+        ScheduledFuture<?> result = executor.scheduleAtFixedRate(task, 1, 5, TimeUnit.SECONDS);
 
         resultTextArea.getStyleClass().add("result-area");
     }
