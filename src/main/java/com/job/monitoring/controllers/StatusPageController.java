@@ -110,7 +110,7 @@ public class StatusPageController implements Initializable {
         tilePane.setHgap(10.0);
         tilePane.setVgap(10.0);
         tilePane.setPadding(new Insets(20, 20, 20, 20));
-//        tilePane.setPrefColumns(3);
+        tilePane.setPrefColumns(4);
         tilePane.setMaxWidth(Region.USE_PREF_SIZE);
 
         boolean showProgressIndicator = false;
