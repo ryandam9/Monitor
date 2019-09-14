@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.job.monitoring.utils.AppLogging.logger;
+import static com.job.monitoring.utils.Utils.logStackTrace;
+
 /**
  * This Thread is executed by the Executor Server, every X period units. For each job, the thread fetches
  * the job's contents from the App Server, and stores in the Button's "jobLog" property.
@@ -40,6 +43,7 @@ public class RefreshJobStatus implements Runnable {
 
         Map<String, String> logFileMap = new HashMap<>();
 
+        /* Read the log file and identify Job names and their Statuses. */
         for (String line : jobFile.split("\n")) {
             String jobName = line.split(" ")[0];
             String status = line.split(" ")[3];
@@ -51,39 +55,47 @@ public class RefreshJobStatus implements Runnable {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ex) {
-                System.out.println("Background thread has been Interrupted!!");
+                logger.debug("Background thread has been Interrupted!!");
             }
 
             final String targetJob = tile.getJobName();
 
             try {
                 final boolean showProgressIndicator;
-                String statusColor = "";
-                final String jobStatus = logFileMap.get(targetJob);
+                final String btnClass;
+                final String jobStatus = logFileMap.get(targetJob).toUpperCase();
 
                 if (jobStatus.equalsIgnoreCase("not-started")) {
                     showProgressIndicator = false;
-                    statusColor = "#F2F2F2";
+                    btnClass = "job-not-started";
                 } else if (jobStatus.equalsIgnoreCase("success")) {
                     showProgressIndicator = false;
-                    statusColor = "#1EB980";
+                    btnClass = "job-success";
                 } else if (jobStatus.equalsIgnoreCase("failed")) {
                     showProgressIndicator = false;
-                    statusColor = "#7D2996";
+                    btnClass = "job-failed";
                 } else {
                     showProgressIndicator = true;
-                    statusColor = "#B4C1CC";
+                    btnClass = "job-running";
                 }
 
+                /* Update UI */
                 Platform.runLater(() -> {
                     tile.getStatusBtn().setText(jobStatus);
+
+                    /* Button's first class is "Button" [This is Default], second one is "tile-button",
+                      third one changes based on Job status. In this case, remove the third class, and a new one
+                      based on job's current status which is derived above.
+                     */
+                    tile.getStatusBtn().getStyleClass().remove(2);
+                    tile.getStatusBtn().getStyleClass().add(btnClass);
                     tile.getProgressIndicator().setVisible(showProgressIndicator);
-                    statusMsg.setText(jobStatus);
                 });
             } catch (Exception ex) {
-                ex.printStackTrace();
+                logStackTrace(ex);
             }
 
+            // Fetch Job log and store it in the Tile member variable.
             try {
                 cmd = appServerCmdTemplate + "'cat " + logDir + "/" + targetJob + "'";
                 String logFileOutput = SSHConnection.executeRemoteCommand(cmd);
@@ -92,7 +104,7 @@ public class RefreshJobStatus implements Runnable {
                     tile.setJobLog(logFileOutput);
                 });
             } catch (Exception ex) {
-                ex.printStackTrace();
+                logStackTrace(ex);
             }
         }
     }

@@ -9,6 +9,10 @@ import java.util.Properties;
 import static com.job.monitoring.utils.AppLogging.logger;
 
 public class Utils {
+    /**
+     * Loads the Properties file.
+     * @return
+     */
     public static Properties loadProperties() {
         Properties prop = new Properties();
 
@@ -23,6 +27,10 @@ public class Utils {
         return prop;
     }
 
+    /**
+     * Log an Exception
+     * @param e
+     */
     public static void logStackTrace(Exception e) {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);

@@ -1,7 +1,6 @@
 package com.job.monitoring.utils;
 
 import com.jcraft.jsch.*;
-import javafx.concurrent.Task;
 
 import java.io.InputStream;
 
@@ -23,7 +22,6 @@ public class SSHConnection {
             jsch.addIdentity(privateKeyFile);
             session = jsch.getSession(userId, hostIpAddress, 22);
             session.setConfig(config);
-            session.setTimeout(2000);
             session.connect();
         } catch (Exception ex) {
             logStackTrace(ex);
@@ -34,7 +32,6 @@ public class SSHConnection {
     }
 
     public static String executeRemoteCommand(String command) throws IllegalArgumentException {
-        System.out.println("Command getting executed: " + command);
         int exitStatus = 0;
 
         StringBuffer result = new StringBuffer();
@@ -80,7 +77,6 @@ public class SSHConnection {
         }
 
         logger.debug("Remote Command: " + command);
-        logger.debug("Result: " + result.toString().trim());
 
         if (exitStatus == 0) {
             return result.toString().trim();

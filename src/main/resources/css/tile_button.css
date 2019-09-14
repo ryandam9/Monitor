@@ -11,10 +11,12 @@
     -fx-dark-black: #373741;
     -fx-light-green: #1EB980;
     -fx-dark-green: #005D57;
+    -fx-green: #129622;
     -fx-blue: #5264AE;
     -fx-dark-blue: #2979FF;
     -fx-pure-black: #000000;
     -fx-google-blue: #065FD4;
+    -fx-red: #FC3003;
 
     /* Found this style in eenadu.net login page */
     -fx-light-white-gray: #F2F2F2;
@@ -72,4 +74,52 @@
     -fx-progress-color: -fx-soumya-purple;
     -fx-pref-width: 75;
     -fx-pref-height: 75;
+}
+
+.job-success {
+    -fx-background-color: -fx-green;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.job-success:hover {
+    -fx-background-color: white;
+    -fx-text-fill: -fx-green;
+    -fx-font-weight: bold;
+}
+
+.job-failed {
+    -fx-background-color: -fx-red;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.job-failed:hover {
+    -fx-background-color: -fx-soumya-purple;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.job-running {
+    -fx-background-color: #0388fc;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.job-running:hover {
+    -fx-background-color: white;
+    -fx-text-fill: #0388fc;
+    -fx-font-weight: bold;
+}
+
+.job-not-started {
+    -fx-background-color: #fcb503;
+    -fx-font-weight: bold;
+    -fx-font-fill: -fx-dark-black;
+}
+
+.job-not-started:hover {
+    -fx-background-color: -fx-dark-black;
+    -fx-text-fill: #fcb503;
+    -fx-font-weight: bold;
 }

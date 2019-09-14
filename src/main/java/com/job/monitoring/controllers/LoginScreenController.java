@@ -1,6 +1,5 @@
 package com.job.monitoring.controllers;
 
-import com.job.monitoring.ui.TileButton;
 import com.job.monitoring.utils.SSHConnection;
 import com.job.monitoring.utils.Utils;
 import com.job.monitoring.utils.ValidateInputsThread;
@@ -89,6 +88,7 @@ public class LoginScreenController implements Initializable {
         jobFile.setText(jobFileLocation);
         logDirectory.setText(logDirectoryLoc);
 
+        // Add a Progress Indicator to the first page.
         progressIndicator = new ProgressIndicator();
         progressIndicator.setPrefSize(50, 50);
         progressIndicator.setVisible(false);
@@ -138,6 +138,8 @@ public class LoginScreenController implements Initializable {
         details.put("jobLog", jobFileLocation);
         details.put("jobLogsLocation", logDirectoryLoc);
 
+        // Validate the Inputs and check whether SSH Connection to the hosts is possible or not
+        // This is going to happen in the Background.
         Thread t = new ValidateInputsThread(details, statusMsg, progressIndicator, verifyBtn, monitorBtn);
         t.setDaemon(false);
         t.start();
@@ -169,7 +171,7 @@ public class LoginScreenController implements Initializable {
 
             // Read the Job log file and identify job names to be monitored.
             String jobFile = SSHConnection.executeRemoteCommand(appServerCmdTemplate + "cat " + jobLogLocation);
-            for(String line: jobFile.split("\n")) {
+            for (String line : jobFile.split("\n")) {
                 String jobName = line.split(" ")[0];
                 String status = line.split(" ")[3];
 

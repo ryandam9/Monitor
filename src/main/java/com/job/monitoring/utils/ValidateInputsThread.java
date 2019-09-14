@@ -13,7 +13,7 @@ public class ValidateInputsThread extends Thread {
     private Map<String, String> details;
     private Label statusMsg;
     private ProgressIndicator progressIndicator;
-    private Button verfiyBtn;
+    private Button verifyBtn;
     private Button monitorBtn;
 
     public ValidateInputsThread(Map<String, String> details,
@@ -24,7 +24,7 @@ public class ValidateInputsThread extends Thread {
         this.details = details;
         this.statusMsg = statusMsg;
         this.progressIndicator = progressIndicator;
-        this.verfiyBtn = verifyBtn;
+        this.verifyBtn = verifyBtn;
         this.monitorBtn = monitorBtn;
     }
 
@@ -41,7 +41,6 @@ public class ValidateInputsThread extends Thread {
         String appServerPrivateKeyFile = details.get("appServerPrivateKeyFile");
 
         String jobLog = details.get("jobLog");
-        String jobLogsLocation = details.get("jobLogsLocation");
 
         // Check If the Credentials working or not. The Requirement is to connect from [Local Machine] -> Jump Box -> App Server.
         SSHConnection.userId = jumpBoxUserId;
@@ -89,11 +88,11 @@ public class ValidateInputsThread extends Thread {
         // Read the Contents of the Jobs file from App server.
         try {
             String cmd = "ssh -i " + appServerPrivateKeyFile + " " + appServerUserId + "@" + appServerIpAddress + " " + "'cat " + jobLog + "'";
-            output = SSHConnection.executeRemoteCommand(cmd);
+            SSHConnection.executeRemoteCommand(cmd);
             String msg = msg1 + "\n" + "Job file: " + jobLog + " is available on App server!";
             Platform.runLater(() -> statusMsg.setText(msg));
             Platform.runLater(() -> progressIndicator.setVisible(false));
-            Platform.runLater(() -> verfiyBtn.setDisable(true));
+            Platform.runLater(() -> verifyBtn.setDisable(true));
             Platform.runLater(() -> monitorBtn.setDisable(false));
         } catch (IllegalArgumentException e) {
             logStackTrace(e);
@@ -103,5 +102,8 @@ public class ValidateInputsThread extends Thread {
 
             return;
         }
+
+        // This is same as Clicking the 'Monitor' button.
+        Platform.runLater(() -> monitorBtn.fire());
     }
 }

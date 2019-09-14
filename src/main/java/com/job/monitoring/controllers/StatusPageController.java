@@ -71,11 +71,10 @@ public class StatusPageController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        Alert a = new Alert(Alert.AlertType.CONFIRMATION, "Hello World", ButtonType.OK);
-
         jobs = new ArrayList<>();
         executor = Executors.newScheduledThreadPool(2);
 
+        // Add a Status message field to the Status bar
         Label statusMsg = new Label();
         statusMsg.getStyleClass().add("text-field");
         this.statusMsg = statusMsg;
@@ -94,44 +93,47 @@ public class StatusPageController implements Initializable {
      * @param jobList
      * @param logDir
      */
-    public void setJobList(Stage loginStage, String jobLogLocation,
+    public void setJobList(Stage loginStage,
+                           String jobLogLocation,
                            List<String> jobList,
                            List<String> statuses,
-                           String logDir, String appServerCmdTemplate) {
+                           String logDir,
+                           String appServerCmdTemplate) {
         this.jobList = jobList;
         this.logDir = logDir;
         this.appServerCmdTemplate = appServerCmdTemplate;
         this.loginStage = loginStage;
         this.jobLogLocation = jobLogLocation;
 
+        // Create a Tile pane
         TilePane tilePane = new TilePane(Orientation.HORIZONTAL);
         tilePane.setHgap(10.0);
         tilePane.setVgap(10.0);
         tilePane.setPadding(new Insets(20, 20, 20, 20));
-        tilePane.setPrefColumns(3);
+//        tilePane.setPrefColumns(3);
         tilePane.setMaxWidth(Region.USE_PREF_SIZE);
 
         boolean showProgressIndicator = false;
-        String statusColor = "";
+        String btnClass = "";
 
         for (int i = 0; i < jobList.size(); i++) {
-            String jobStatus = statuses.get(i);
+            String jobStatus = statuses.get(i).toUpperCase();
 
             if (jobStatus.equalsIgnoreCase("not-started")) {
                 showProgressIndicator = false;
-                statusColor = "#F2F2F2";
+                btnClass = "job-not-started";
             } else if (jobStatus.equalsIgnoreCase("success")) {
                 showProgressIndicator = false;
-                statusColor = "#1EB980";
+                btnClass = "job-success";
             } else if (jobStatus.equalsIgnoreCase("failed")) {
                 showProgressIndicator = false;
-                statusColor = "#7D2996";
+                btnClass = "job-failed";
             } else if (jobStatus.equalsIgnoreCase("running")) {
                 showProgressIndicator = true;
-                statusColor = "#B4C1CC";
+                btnClass = "job-running";
             }
 
-            TileButton tile = new TileButton(jobList.get(i), "BLACK", "yellow", statuses.get(i), showProgressIndicator, statusColor);
+            TileButton tile = new TileButton(jobList.get(i), "BLACK", "yellow", jobStatus, showProgressIndicator, btnClass);
             tilePane.getChildren().addAll(tile);
 
             // Store all Button references
@@ -177,5 +179,4 @@ public class StatusPageController implements Initializable {
 
         System.exit(0);
     }
-
 }

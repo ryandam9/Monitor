@@ -12,7 +12,7 @@ public final class TileButton extends VBox {
     private final Button statusBtn;
     private String jobLog;
 
-    public TileButton(String jobName, String tileColor, String fontColor, String jobStatus, boolean showProgressIndicator, String statusColor) {
+    public TileButton(String jobName, String tileColor, String fontColor, String jobStatus, boolean showProgressIndicator, String btnClass) {
         this.getStyleClass().add("tile-box");
         setStyle("-fx-background-color: " + tileColor + ";");
 
@@ -28,21 +28,20 @@ public final class TileButton extends VBox {
         progressIndicator.setVisible(showProgressIndicator);
 
         // Job Status Color
-        statusBtn = makeButton(jobStatus, statusColor);
+        statusBtn = makeButton(jobStatus, btnClass);
 
         getChildren().addAll(label, progressIndicator, statusBtn);
     }
 
     private Label createLabel(String text, String color) {
         Label label = new Label(text);
-        label.setStyle("-fx-text-fill:" + color);
         return label;
     }
 
-    private Button makeButton(String name, String statusColor) {
+    private Button makeButton(String name, String btnClass) {
         Button button = new Button(name);
         button.getStyleClass().add("tile-button");
-        button.setStyle("-fx-background-color:" + statusColor);
+        button.getStyleClass().add(btnClass);
         return button;
     }
 
