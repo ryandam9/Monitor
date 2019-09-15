@@ -71,7 +71,7 @@
 }
 
 .progress-indicator {
-    -fx-progress-color: -fx-soumya-purple;
+    -fx-progress-color: #fcb503;
     -fx-pref-width: 75;
     -fx-pref-height: 75;
 }

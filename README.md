@@ -23,7 +23,7 @@ My main focus was to see how I could develop a JavaFX application rather than wh
 
 ### Screen shots
 
-![](./images/monitor1.gif)
+![](./images/monitor-javafx.gif)
 
 
 
